@@ -186,10 +186,6 @@ Make your changes and commit (git commit -m "Add your feature").
 Push to your branch (git push origin feature/your-feature).
 Open a pull request with a description of your changes.
 
-Please ensure your code follows PEP 8 guidelines and includes appropriate tests.
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
-Authors
 
 Shushil Suyel (1210439072)
 Vishal Mishra (1210439082)
