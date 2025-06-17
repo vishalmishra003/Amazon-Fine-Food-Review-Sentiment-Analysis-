@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Amazon Review Sentiment Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #FFFFFF;
+            color: #232F3E;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: #F3F3F3;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #146EB4;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #FF9900, #146EB4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #232F3E;
+            margin-bottom: 5px;
+        }
+
+        textarea {
+            background: #FFFFFF;
+            border: 1px solid #D5D9D9;
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 1em;
+            color: #232F3E;
+            resize: vertical;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #FF9900;
+            box-shadow: 0 0 5px rgba(255, 153, 0, 0.3);
+        }
+
+        button {
+            background: #FF9900;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            color: #FFFFFF;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.3s ease;
+            align-self: center;
+        }
+
+        button:hover {
+            background: #F08804;
+            transform: scale(1.05);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #FFFFFF;
+            border-radius: 6px;
+            border: 1px solid #E7E7E7;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .result p {
+            font-size: 1em;
+            margin: 8px 0;
+            color: #232F3E;
+        }
+
+        .result strong {
+            color: #146EB4;
+            font-weight: 500;
+        }
+
+        .sentiment-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .stars {
+            font-size: 1.2em;
+        }
+
+        .stars .filled {
+            color: #FF9900;
+        }
+
+        .stars .empty {
+            color: #D5D9D9;
+        }
+
+        .sentiment-label {
+            font-size: 1em;
+            color: #232F3E;
+        }
+
+        .feedback-message {
+            color: #008A00;
+            font-size: 1em;
+            margin-top: 15px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            textarea {
+                font-size: 0.9em;
+            }
+
+            button {
+                font-size: 1em;
+                padding: 10px 15px;
+            }
+
+            .result p {
+                font-size: 0.9em;
+            }
+
+            .stars {
+                font-size: 1.1em;
+            }
+
+            .sentiment-label {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Amazon Review Sentiment Predictor</h1>
+        <form method="POST">
+            <label for="review">Enter Review:</label>
+            <textarea name="review" rows="5" cols="50">{{ review_text }}</textarea>
+            <!-- <label for="feedback">Feedback on Prediction:</label>
+            <textarea name="feedback" rows="3" cols="50" placeholder="Share your thoughts on the prediction"></textarea> -->
+            <button type="submit">Predict</button>
+        </form>
+        {% if prediction %}
+            <div class="result">
+                <p><strong>Predicted Score:</strong> {{ prediction }} stars</p>
+                <p><strong>Helpfulness:</strong> {{ helpfulness }}</p>
+                <p><strong>Sentiment:</strong></p>
+                <div class="sentiment-rating">
+                    <div class="stars">
+                        {% set stars = prediction | int %}
+                        {% set label = '' %}
+                        {% if stars == 5 %}
+                            {% set label = 'Very Positive' %}
+                        {% elif stars == 4 %}
+                            {% set label = 'Positive' %}
+                        {% elif stars == 3 %}
+                            {% set label = 'Neutral' %}
+                        {% elif stars == 2 %}
+                            {% set label = 'Negative' %}
+                        {% else %}
+                            {% set label = 'Very Negative' %}
+                        {% endif %}
+                        {% for i in range(stars) %}
+                            <span class="filled">★</span>
+                        {% endfor %}
+                        {% for i in range(5 - stars) %}
+                            <span class="empty">☆</span>
+                        {% endfor %}
+                    </div>
+                    <span class="sentiment-label">{{ label }}</span>
+                </div>
+                {% if top_features %}
+                    <p><strong>Top Influential Words:</strong></p>
+                    {% for word, weight in top_features %}
+                        <p>{{ word }} (Weight: {{ weight }})</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endif %}
+        {% if feedback_message %}
+            <p class="feedback-message">{{ feedback_message }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
