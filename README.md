@@ -192,6 +192,9 @@ This project is licensed under the MIT License. See the LICENSE file for details
 Authors
 
 Shushil Suyel (1210439072)
+Vishal Mishra (1210439082)
+Vaishnavi Kashyap (1210439078)
+Yash Pathak (1210439083)
 
 Supervisor: Ms. Ritu Dwivedi, Assistant Professor, Babu Banarasi Das University, Lucknow
 Acknowledgments
